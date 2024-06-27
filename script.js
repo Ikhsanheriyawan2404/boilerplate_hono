@@ -3,9 +3,9 @@ import { sleep } from 'k6';
 
 export const options = {
   // A number specifying the number of VUs to run concurrently.
-  vus: 1000,
+  vus: 10000,
   // A string specifying the total duration of the test run.
-  duration: '10s',
+  duration: '30s',
 
   // The following section contains configuration options for execution of this
   // test script in Grafana Cloud.
@@ -56,6 +56,6 @@ export const options = {
 // about authoring k6 scripts.
 //
 export default function() {
-  http.get('http://192.168.56.1:4001');
+  http.get('http://localhost:3000');
   sleep(1);
 }
