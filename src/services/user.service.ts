@@ -18,7 +18,7 @@ export class UserService {
   }
 
   async update(id: number, data: User): Promise<User> {
-    await await this.checkDataMustExist(id);
+    await this.checkDataMustExist(id);
     
     return await prisma.user.update({
       where: { id },

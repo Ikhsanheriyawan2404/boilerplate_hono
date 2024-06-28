@@ -1,3 +1,5 @@
 # deps
 .env
 node_modules/
+logs
+*.log

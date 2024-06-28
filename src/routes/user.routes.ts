@@ -1,6 +1,5 @@
 import { Hono } from 'hono';
 import { createUserHandler, deleteUserHandler, getAllUserHandler, getUserHandler, updateUserHandler } from '../handlers/user.handler';
-import { errorHandlerMiddleware } from '../middleware/error.middleware';
 
 const router = new Hono()
 
