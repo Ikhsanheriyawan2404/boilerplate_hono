@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
 import { User } from '../models/User';
 import { HTTPException } from 'hono/http-exception';
-
-const prisma = new PrismaClient();
+import prisma from '../database/db';
 
 export class UserService {
   async create(data: User): Promise<User> {
