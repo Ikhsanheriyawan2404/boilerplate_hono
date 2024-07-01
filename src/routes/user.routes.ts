@@ -3,10 +3,10 @@ import { createUserHandler, deleteUserHandler, getAllUserHandler, getUserHandler
 
 const router = new Hono()
 
-router.get('/users', getAllUserHandler);
-router.get('/users/:id', getUserHandler);
-router.post('/users', createUserHandler);
-router.put('/users/:id', updateUserHandler);
-router.delete('/users/:id', deleteUserHandler);
+router.get('/users', ...getAllUserHandler);
+router.get('/users/:id', ...getUserHandler);
+router.post('/users', ...createUserHandler);
+router.put('/users/:id', ...updateUserHandler);
+router.delete('/users/:id', ...deleteUserHandler);
 
 export default router;

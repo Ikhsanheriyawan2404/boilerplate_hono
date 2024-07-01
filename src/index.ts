@@ -11,20 +11,21 @@ const app = new Hono();
 
 app.get('/', (c) => c.text('Halo Sayang'));
 
-// app.use(fileLogger)
-// app.use(logger())
+app.use(fileLogger)
+app.use(logger())
 
 app.route('api', userRoutes)
-app.get('api/access', (c) => {
-  throw new HTTPException(401, { message: 'Custom error message' })
-});
 
 app.notFound((c) => {
-  // logError({ method, url, status, responseBody });
+  const { method, url } = c.req;
+  const status = 404
+  const body = {
+    message: "Not found"
+  };
+
+  logError({ method, url, status, responseBody: body });
   c.status(404)
-  return c.json({
-    message: "Not found",
-  })
+  return c.json(body)
 }) 
 
 app.onError((err, c) => {
@@ -59,6 +60,6 @@ app.onError((err, c) => {
 })
 
 export default { 
-  port: 4000,
+  port: process.env.PORT,
   fetch: app.fetch
 }
