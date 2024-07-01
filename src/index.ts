@@ -1,4 +1,4 @@
-import { Hono } from 'hono';
+import { Context, Hono } from 'hono';
 import { logger } from 'hono/logger'
 import { env } from 'hono/adapter'
 import { HTTPException } from 'hono/http-exception'
@@ -6,8 +6,16 @@ import { ZodError } from 'zod';
 import userRoutes from './routes/user.routes';
 import { fileLogger } from './middleware/logger.middleware';
 import { logError } from './logger';
+import redisClient from './database/redis';
 
 const app = new Hono();
+
+app.get('/test-redis', async (c: Context) => {
+  await redisClient.set('test-key', 'Test Value');
+  const value = await redisClient.get('test-key');
+  
+  return c.json({ message: 'Redis connection test successful', value });
+});
 
 app.get('/', (c) => c.text('Halo Sayang'));
 

@@ -6,6 +6,7 @@
   "dependencies": {
     "@prisma/client": "5.13.0",
     "hono": "^4.4.8",
+    "ioredis": "^5.4.1",
     "prisma": "5.13.0",
     "winston": "^3.13.0",
     "zod": "^3.23.8"
