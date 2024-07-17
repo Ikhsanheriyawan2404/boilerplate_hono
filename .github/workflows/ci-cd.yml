@@ -67,6 +67,6 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
           cd /var/www/html/hono
-          docker compose -f docker-compose.prod.yml pull
-          docker compose -f docker-compose.prod.yml up -d
+          docker compose -f compose.prod.yml pull
+          docker compose -f compose.prod.yml up -d
         EOF
