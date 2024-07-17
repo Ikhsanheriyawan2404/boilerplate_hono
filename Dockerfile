@@ -26,6 +26,9 @@ ENV NODE_ENV=production
 RUN bun test
 # RUN bun run build
 
+# run Prisma generate and migrate for production
+RUN bunx prisma generate
+
 # copy production dependencies and source code into final image
 FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules

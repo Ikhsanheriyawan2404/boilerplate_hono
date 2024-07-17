@@ -6,12 +6,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${PORT}:${PORT}"
-    # environment:
-      # NODE_ENV: production
     depends_on:
-      - db
+      - db_hono
       
-  db:
+  db_hono:
     image: postgres:latest
     ports:
       - "${DB_PORT}:${DB_PORT}"
@@ -20,17 +18,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
     volumes:
-      - db-data:/var/lib/postgresql/data
-
-  redis-stack:
-    image: redis/redis-stack:latest
-    container_name: redis-stack
-    ports:
-      - "6379:6379"
-      - "8001:8001"
-    # volumes:
-    #   - /local-test-redis/:/data # if using persistent data
-    restart: unless-stopped
+      - db-hono:/var/lib/postgresql/data
 
 volumes:
-  db-data:
+  db-hono:

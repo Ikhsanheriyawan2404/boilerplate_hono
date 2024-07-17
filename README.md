@@ -21,8 +21,8 @@ bun install
 Setelah database disiapkan, konfigurasikan Prisma dengan langkah-langkah berikut:
 
 ```sh
-npx prisma db push
-npx prisma generate
+bunx prisma db push
+bunx prisma generate
 ```
 ### Menjalankan Aplikasi
 Untuk menjalankan aplikasi dalam mode pengembangan, gunakan perintah:
