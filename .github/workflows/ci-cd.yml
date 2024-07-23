@@ -1,0 +1,111 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        install: true
+
+    - name: Log in to registry
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ secrets.REGISTRY_HOST }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    - name: Determine environment and set ENV_FILE
+      id: set-env-file
+      run: |
+        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          echo "::set-output name=env_file::${{ secrets.ENV_FILE_PROD }}"
+        else
+          echo "::set-output name=env_file::${{ secrets.ENV_FILE_DEV }}"
+        fi
+
+    - name: Build and push Docker image
+      env:
+        REGISTRY_URL: ${{ secrets.REGISTRY_HOST }}
+        IMAGE_NAME: hono
+        TAG: latest
+        ENV_FILE: ${{ steps.set-env-file.outputs.env_file }}
+      run: |
+        echo "$ENV_FILE" | base64 --decode > .env
+        docker buildx build --platform linux/amd64,linux/arm64 \
+          -t $REGISTRY_URL/$IMAGE_NAME:$TAG \
+          --push .
+
+  deploy_main:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Add SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to Production
+      env:
+        HOST: ${{ secrets.HOST }}
+        USER: ${{ secrets.USER }}
+        ENV_FILE_CONTENT: ${{ secrets.ENV_FILE_PROD }}
+      run: |
+        ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
+          cd /var/www/html/hono
+          echo "ENV_FILE_CONTENT length: ${#ENV_FILE_CONTENT}"
+          echo "ENV_FILE_CONTENT preview: ${ENV_FILE_CONTENT:0:100}" # Preview first 100 characters
+          echo "$ENV_FILE_CONTENT" | base64 --decode > .env.production
+          cat .env.production # Debug: Check the contents of .env.production
+          cat .env.production
+          docker compose -f compose.yml -f compose.prod.yml --env-file .env.production pull
+          docker compose -f compose.yml -f compose.prod.yml --env-file .env.production up -d
+        EOF
+
+  deploy_dev:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Add SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to Development
+      env:
+        HOST: ${{ secrets.HOST }}
+        USER: ${{ secrets.USER }}
+        ENV_FILE_CONTENT: ${{ secrets.ENV_FILE_DEV }}
+      run: |
+        ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
+          cd /var/www/html/hono
+          # Create the .env.development file from secret
+          printf "%s" "$ENV_FILE_CONTENT" | base64 --decode > .env.production
+          docker compose -f compose.yml -f compose.dev.yml --env-file .env.development pull
+          docker compose -f compose.yml -f compose.dev.yml --env-file .env.development up -d
+        EOF

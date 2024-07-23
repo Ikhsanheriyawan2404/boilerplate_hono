@@ -1,5 +1,7 @@
 # deps
 .env
+.env.development
+.env.production
 node_modules/
 logs
 *.log

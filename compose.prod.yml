@@ -1,0 +1,17 @@
+version: '3'
+services:
+
+  hono-prod:
+    image: registry.hartanahgroup.com/hono:latest
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - db
+    networks:
+      - hono_network
+
+volumes:
+  db-hono:

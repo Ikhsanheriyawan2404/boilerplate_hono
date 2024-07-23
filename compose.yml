@@ -1,0 +1,75 @@
+version: '3'
+services:
+  # main-nginx-proxy:
+  #   image: jwilder/nginx-proxy
+  #   container_name: main-nginx-proxy
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - /var/run/docker.sock:/tmp/docker.sock:ro
+  #     - ./nginx/certs:/etc/nginx/certs:ro
+  #     - ./nginx/vhost.d:/etc/nginx/vhost.d
+  #     - ./nginx/html:/usr/share/nginx/html
+  #     - ./nginx/conf.d:/etc/nginx/conf.d
+  #     - ./nginx/letsencrypt/etc:/etc/letsencrypt:ro
+  #     - ./nginx/proxy_max_body.conf:/etc/nginx/conf.d/proxy.conf:ro
+  #   labels:
+  #     com.github.nginx-proxy.nginx-proxy: "true"
+  #   networks:
+  #     - hono_network
+
+  # letsencrypt:
+  #   image: nginxproxy/acme-companion
+  #   container_name: letsencrypt
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - ./nginx/certs:/etc/nginx/certs:rw
+  #     - ./nginx/vhost.d:/etc/nginx/vhost.d
+  #     - ./nginx/html:/usr/share/nginx/html
+  #     - ./nginx/letsencrypt:/etc/acme.sh
+  #     - ./nginx/letsencrypt/etc:/etc/letsencrypt
+  #   environment:
+  #     DEFAULT_EMAIL: ikhsanheriyawan2404@gmail.com
+  #     NGINX_PROXY_CONTAINER: main-nginx-proxy
+  #   depends_on:
+  #     - main-nginx-proxy
+  #   networks:
+  #     - hono_network
+
+  # registry:
+  #   image: registry:2
+  #   environment:
+  #     REGISTRY_AUTH: htpasswd
+  #     REGISTRY_AUTH_HTPASSWD_REALM: Registry
+  #     REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.password
+  #     REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+  #     VIRTUAL_HOST: domain.name.com
+  #     LETSENCRYPT_HOST: domain.name.com
+  #     LETSENCRYPT_EMAIL: ikhsanheriyawan2404@gmail.com
+  #   volumes:
+  #     - ./registry_data:/var/lib/registry
+  #     - ./registry_auth:/auth
+  #   networks:
+  #     - hono_network
+  #   restart: always
+          
+  db_hono:
+    image: postgres:latest
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - db-hono:/var/lib/postgresql/data
+    networks:
+      - hono_network
+
+volumes:
+  db-hono:
+
+networks:
+  hono_network:
+    driver: bridge
