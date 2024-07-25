@@ -17,7 +17,7 @@ app.get('/test-redis', async (c: Context) => {
   return c.json({ message: 'Redis connection test successful', value });
 });
 
-app.get('/', (c) => c.text('Halo Cantik'));
+app.get('/', (c) => c.text('Halo Sayang'));
 
 app.use(fileLogger)
 app.use(logger())
