@@ -3,7 +3,7 @@ import { logger } from 'hono/logger'
 import { env } from 'hono/adapter'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod';
-import userRoutes from './routes/user.routes';
+// import userRoutes from './routes/user.routes';
 import { fileLogger } from './middleware/logger.middleware';
 import { logError } from './logger';
 import redisClient from './database/redis';
@@ -13,16 +13,16 @@ const app = new Hono();
 app.get('/test-redis', async (c: Context) => {
   await redisClient.set('test-key', 'Test Value');
   const value = await redisClient.get('test-key');
-  
+
   return c.json({ message: 'Redis connection test successful', value });
 });
 
-app.get('/', (c) => c.text('Halo Sayang'));
+app.get('/', (c) => c.text('Halo Cantik'));
 
 app.use(fileLogger)
 app.use(logger())
 
-app.route('api', userRoutes)
+// app.route('api', userRoutes)
 
 app.notFound((c) => {
   const { method, url } = c.req;
@@ -34,7 +34,7 @@ app.notFound((c) => {
   logError({ method, url, status, responseBody: body });
   c.status(404)
   return c.json(body)
-}) 
+})
 
 app.onError((err, c) => {
   const { method, url } = c.req;
@@ -67,7 +67,7 @@ app.onError((err, c) => {
   }
 })
 
-export default { 
+export default {
   port: process.env.PORT,
   fetch: app.fetch
 }

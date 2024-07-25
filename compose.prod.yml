@@ -2,14 +2,16 @@ version: '3'
 services:
 
   hono-prod:
-    image: registry.hartanahgroup.com/hono:latest
+    image: registry.neidra.my.id/hono:latest
     # build:
     #   context: .
     #   dockerfile: Dockerfile
     ports:
       - "${PORT}:${PORT}"
+    env_file:
+      - ./.env.production
     depends_on:
-      - db
+      - db_hono
     networks:
       - hono_network
 
