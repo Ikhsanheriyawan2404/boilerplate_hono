@@ -11,26 +11,26 @@ on:
       - dev
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v2
+    # steps:
+    # - name: Checkout code
+    #   uses: actions/checkout@v2
 
-  #   - name: Log in to registry
-  #     uses: docker/login-action@v1
-  #     with:
-  #       registry: ${{ secrets.REGISTRY_HOST }}
-  #       username: ${{ secrets.REGISTRY_USERNAME }}
-  #       password: ${{ secrets.REGISTRY_PASSWORD }}
+    # - name: Log in to registry
+    #   uses: docker/login-action@v1
+    #   with:
+    #     registry: ${{ secrets.REGISTRY_HOST }}
+    #     username: ${{ secrets.REGISTRY_USERNAME }}
+    #     password: ${{ secrets.REGISTRY_PASSWORD }}
 
-  #   - name: Build and push Docker image
-  #     uses: docker/build-push-action@v2
-  #     with:
-  #       context: .
-  #       push: true
-  #       tags: ${{ secrets.REGISTRY_HOST }}/hono:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
+    # - name: Build and push Docker image
+    #   uses: docker/build-push-action@v2
+    #   with:
+    #     context: .
+    #     push: true
+    #     tags: ${{ secrets.REGISTRY_HOST }}/hono:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
 
   deploy_main:
     needs: build
