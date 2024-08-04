@@ -51,7 +51,7 @@ jobs:
         HOST: ${{ secrets.HOST }}
         USER: ${{ secrets.USER }}
       run: |
-        ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
+        ssh -o StrictHostKeyChecking=no -p 10123 $USER@$HOST << 'EOF'
           cd /var/www/html/hono
           docker compose -f compose.yml -f compose.prod.yml --env-file .env.production pull
           docker compose -f compose.yml -f compose.prod.yml --env-file .env.production up -d
@@ -76,7 +76,7 @@ jobs:
         HOST: ${{ secrets.HOST }}
         USER: ${{ secrets.USER }}
       run: |
-        ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
+        ssh -o StrictHostKeyChecking=no -p 10123 $USER@$HOST << 'EOF'
           cd /var/www/html/hono
           docker compose -f compose.yml -f compose.dev.yml --env-file .env.development pull
           docker compose -f compose.yml -f compose.dev.yml --env-file .env.development up -d
