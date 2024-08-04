@@ -2,7 +2,7 @@
 Boilerplate Hono.
 
 ## Deskripsi
-bikin boilerplate untuk framework Hono. coba dengan runtime Bun
+bikin boilerplate untuk framework Hono. coba dengan runtime Bun. test
 
 ## Instalasi
 
